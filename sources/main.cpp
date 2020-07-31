@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 
 #include "../modules/network.h"
+#include "../modules/yandexapi.h"
 #include "private.h"
 
 int main(int argc, char *argv[])
@@ -20,15 +21,18 @@ int main(int argc, char *argv[])
     engine.load(url);
 
     Network net;
+    YandexApi yandex;
     Private privateData;
-    bool state = net.get(privateData.serverAddr);
+    bool state = net.get(privateData.serverAddr + "/" + privateData.workingDir + "/" + privateData.sessionID + "/responce.json");
     QEventLoop loop;
     if (state)
     {
         QObject::connect(&net, &Network::recived, &loop, &QEventLoop::quit);
         loop.exec();
         QString recivedData = net.getRecived();
-        qDebug() << "Yee boi: " << recivedData;
+        QJsonObject recive = QJsonDocument::fromJson(recivedData.toUtf8()).object();
+        Request clearData = yandex.unparseJson(recive);
+        qDebug() << "Yee boi: " << clearData.request.command;
     }
 
     return app.exec();

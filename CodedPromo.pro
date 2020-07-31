@@ -15,6 +15,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         modules/network.cpp \
+        modules/yandexapi.cpp \
         sources/main.cpp
 
 RESOURCES += sources/qml.qrc
@@ -32,4 +33,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     modules/network.h \
+    modules/yandexapi.h \
     sources/private.h
