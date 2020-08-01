@@ -18,7 +18,7 @@ public slots:
     void reciveData();
 
 signals:
-    void recived();
+    void recived(QString);
 
 public:
     explicit Network();

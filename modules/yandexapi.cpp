@@ -1,10 +1,19 @@
 #include "yandexapi.h"
 
-YandexApi::YandexApi()
+YandexApi::YandexApi(QString server, QString session)
 {
     qInfo() << "[YANDEX_API] init";
+    service.initService(thread, server, session);
+    service.moveToThread(&thread);
+    thread.start();
+    connect(&service, &Service::dataRecived, this, &YandexApi::getTheadData);
 }
 
+YandexApi::~YandexApi()
+{
+    thread.quit();
+    thread.wait();
+}
 
 Request YandexApi::unparseJson(QJsonObject data)
 {
@@ -66,4 +75,55 @@ Request YandexApi::unparseJson(QJsonObject data)
     request.version = data["version"].toString();
 
     return  request;
+}
+
+void YandexApi::getTheadData(QJsonObject data)
+{
+    qDebug() << "[YANDEX_SERVICE] Got new data";
+    Request converted = unparseJson(data);
+    if (lastRequest.session.message_id == converted.session.message_id)
+        return;
+    lastRequest = converted;
+    emit newData(lastRequest);
+}
+
+Request YandexApi::getRequest()
+{
+    return lastRequest;
+}
+
+Service::Service(QObject *parent) : QObject(parent){ }
+
+void Service::initService(QThread &thread, QString server, QString session)
+{
+    qDebug() << "[YANDEX_SERVICE] init";
+    serviceURL = server;
+    sessionID = session;
+    connect(&thread, &QThread::started, this, &Service::runService);
+}
+
+void Service::runService()
+{
+    net = new Network();
+    QEventLoop loop;
+    int counter = 0;
+    while (true)
+    {
+        bool state = net->get(serviceURL + "/" + sessionID + "/responce.json");
+        if (state)
+            connect(net, &Network::recived, &loop, &QEventLoop::quit);
+        else
+        {
+            qDebug("[YANDEX_SERVICE] internet error");
+            return;
+        }
+        loop.exec();
+
+        QJsonObject jsonData = QJsonDocument::fromJson(net->getRecived().toUtf8()).object();
+        emit dataRecived(jsonData);
+
+        counter++;
+        if (counter != 0)
+            QThread::sleep(1);
+    }
 }

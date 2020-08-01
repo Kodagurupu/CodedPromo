@@ -3,9 +3,12 @@
 
 #include <QDebug>
 #include <QObject>
+#include <QThread>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+
+#include "network.h"
 
 struct Interfaces
 {
@@ -72,11 +75,47 @@ struct Request
     QString version;
 };
 
-class YandexApi
+
+class Service : public QObject
 {
+    Q_OBJECT
+
+signals:
+    void dataRecived(QJsonObject);
+
 public:
-    YandexApi();
+    Service(QObject *parent = nullptr);
+    void initService(QThread &thread, QString server, QString sessionID);
+
+public slots:
+    void runService();
+
+private:
+    Network *net;
+    QString serviceURL;
+    QString sessionID;
+};
+
+
+class YandexApi : public QObject
+{
+    Q_OBJECT
+signals:
+    void newData(Request);
+
+public:
+    YandexApi(QString server, QString sessionID);
+    ~YandexApi();
+    Request getRequest();
+
+private:
+    QThread thread;
+    Service service;
+    Request lastRequest;
     Request unparseJson(QJsonObject data);
+
+public slots:
+    void getTheadData(QJsonObject data);
 };
 
 #endif // YANDEXAPI_H

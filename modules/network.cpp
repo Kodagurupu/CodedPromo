@@ -24,7 +24,7 @@ bool Network::post(QString addr, QVariant data)
     if (!haveConnection)
     {
         qCritical() << "[NETWORK] Err: no internet connection";
-        emit recived();
+        emit recived("");
         return false;
     }
     QByteArray postData = data.toByteArray();
@@ -39,7 +39,7 @@ bool Network::get(QString addr)
     if (!haveConnection)
     {
         qCritical() << "[NETWORK] Err: no internet connection";
-        emit recived();
+        emit recived("");
         return false;
     }
     netRequest.setUrl(addr);
@@ -53,11 +53,11 @@ void Network::reciveData()
     QString data = netReply->readAll();
     if (data == recivedData)
     {
-        emit recived();
+        emit recived(data);
         return;
     }
     recivedData = data;
-    emit recived();
+    emit recived(data);
 }
 
 QString Network::getRecived()
