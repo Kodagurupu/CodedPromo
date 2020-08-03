@@ -2,10 +2,10 @@
 
 MessageService::MessageService(QObject *parent) : QObject(parent)
 {
-
+    qInfo() << "[MESSAGES] init";
 }
 
 void MessageService::getData(Request data)
 {
-    qDebug() << data.request.command;
+    qDebug() << "[MESSAGES]" << data.request.command;
 }

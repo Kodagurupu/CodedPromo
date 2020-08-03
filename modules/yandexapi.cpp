@@ -6,7 +6,7 @@ YandexApi::YandexApi(QString server, QString session)
     service.initService(thread, server, session);
     service.moveToThread(&thread);
     thread.start();
-    connect(&service, &Service::dataRecived, this, &YandexApi::getTheadData);
+    connect(&service, &YandexService::dataRecived, this, &YandexApi::getThreadData);
 }
 
 YandexApi::~YandexApi()
@@ -77,12 +77,12 @@ Request YandexApi::unparseJson(QJsonObject data)
     return  request;
 }
 
-void YandexApi::getTheadData(QJsonObject data)
+void YandexApi::getThreadData(QJsonObject data)
 {
-    qDebug() << "[YANDEX_SERVICE] Got new data";
     Request converted = unparseJson(data);
     if (lastRequest.session.message_id == converted.session.message_id)
         return;
+    qDebug() << "[YANDEX_SERVICE] Got new data";
     lastRequest = converted;
     emit newData(lastRequest);
 }
@@ -92,17 +92,17 @@ Request YandexApi::getRequest()
     return lastRequest;
 }
 
-Service::Service(QObject *parent) : QObject(parent){ }
+YandexService::YandexService(QObject *parent) : QObject(parent){ }
 
-void Service::initService(QThread &thread, QString server, QString session)
+void YandexService::initService(QThread &thread, QString server, QString session)
 {
     qDebug() << "[YANDEX_SERVICE] init";
     serviceURL = server;
     sessionID = session;
-    connect(&thread, &QThread::started, this, &Service::runService);
+    connect(&thread, &QThread::started, this, &YandexService::runService);
 }
 
-void Service::runService()
+void YandexService::runService()
 {
     net = new Network();
     QEventLoop loop;

@@ -1,10 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-#include "../modules/network.h"
-#include "../modules/yandexapi.h"
-#include "../modules/messageservice.h"
-#include "private.h"
+#include "../modules/controllservice.h"
 
 
 int main(int argc, char *argv[])
@@ -22,10 +19,8 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     engine.load(url);
 
-    MessageService service;
-    Private privateData;
-    YandexApi yandex(privateData.serverAddr + "/" + privateData.workingDir, privateData.sessionID);
-    QObject::connect(&yandex, &YandexApi::newData, &service, &MessageService::getData);
+    ControllService service;
+    service.toggleAutoMode(true);
 
     return app.exec();
 }

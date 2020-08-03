@@ -76,7 +76,7 @@ struct Request
 };
 
 
-class Service : public QObject
+class YandexService : public QObject
 {
     Q_OBJECT
 
@@ -84,7 +84,7 @@ signals:
     void dataRecived(QJsonObject);
 
 public:
-    Service(QObject *parent = nullptr);
+    YandexService(QObject *parent = nullptr);
     void initService(QThread &thread, QString server, QString sessionID);
 
 public slots:
@@ -110,12 +110,12 @@ public:
 
 private:
     QThread thread;
-    Service service;
+    YandexService service;
     Request lastRequest;
     Request unparseJson(QJsonObject data);
 
 public slots:
-    void getTheadData(QJsonObject data);
+    void getThreadData(QJsonObject data);
 };
 
 #endif // YANDEXAPI_H
