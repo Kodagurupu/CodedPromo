@@ -5,6 +5,15 @@ WinControls::WinControls(QObject *parent) : QObject(parent)
 
 }
 
+void WinControls::sendMPos(int x, int y)
+{
+    mouse_event(MOUSEEVENTF_LEFTDOWN, x, y, 0, 0);
+    ::Sleep(200);
+    mouse_event(MOUSEEVENTF_LEFTUP, x, y, 0, 0);
+
+    QThread::currentThread()->msleep(500);
+}
+
 void WinControls::sendKeys(QString keys)
 {
     int arrSize = keys.length();
@@ -47,5 +56,13 @@ void WinControls::sendEnter()
     keybd_event(VK_RETURN, 0, 0, 0);
     Sleep(100);
     keybd_event(VK_RETURN, 0, KEYEVENTF_KEYUP, 0);
+    QThread::currentThread()->msleep(500);
+}
+
+void WinControls::sendTab()
+{
+    keybd_event(VK_TAB, 0, 0, 0);
+    Sleep(100);
+    keybd_event(VK_TAB, 0, KEYEVENTF_KEYUP, 0);
     QThread::currentThread()->msleep(500);
 }

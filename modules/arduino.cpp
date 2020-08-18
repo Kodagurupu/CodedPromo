@@ -5,7 +5,7 @@ Arduino::Arduino(QObject *parent)
 {
     qInfo() << "[ARDUINO] init";
     qInfo() << "[ARDUINO] openPort";
-    serial.setPortName("COM8");
+    serial.setPortName("COM3");
     if (!serial.open(QIODevice::WriteOnly))
     {
         qInfo() << "[ARDUINO] Init Serial Port";

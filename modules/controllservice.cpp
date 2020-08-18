@@ -17,10 +17,16 @@ ControllService::ControllService(QObject *parent)
 void ControllService::sendText(QString command)
 {
     win.swipeWindow();
+    QThread::currentThread()->msleep(500);
+    win.sendMPos(645, 315);
+    QThread::currentThread()->msleep(500);
+    win.sendMPos(288, 337);
+    QThread::currentThread()->msleep(500);
     win.sendKeys(command);
-    win.sendEnter();
+    win.sendMPos(122, 419);
+    QThread::currentThread()->msleep(200 * command.count());
     win.swipeWindow();
-    QThread::currentThread()->msleep(20 * command.count());
+    QThread::currentThread()->msleep(1000);
     emit endActivity();
 }
 
