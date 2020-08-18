@@ -3,10 +3,10 @@
 
 #include "../modules/controllservice.h"
 
-
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    qmlRegisterType<ControllService>("ControllService", 0, 1, "ControllService");
 
     QGuiApplication app(argc, argv);
 
@@ -18,9 +18,6 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
     engine.load(url);
-
-    ControllService service;
-    service.toggleAutoMode(true);
 
     return app.exec();
 }
