@@ -7,7 +7,7 @@
 #include "arduino.h"
 #include "activity.h"
 #include "yandexapi.h"
-#include "wincontrols.h"
+//#include "wincontrols.h"
 #include "messageservice.h"
 #include "../sources/private.h"
 
@@ -15,13 +15,15 @@ class ControllService : public QObject
 {
     Q_OBJECT
     Q_ENUM(Commands)
+    //Q_PROPERTY(bool )
+
 signals:
     void endActivity();
     void reciveVideo(QString);
 
 public:
     explicit ControllService(QObject *parent = nullptr);
-    Q_INVOKABLE void sendText(QString);
+    //Q_INVOKABLE void sendText(QString);
     Q_INVOKABLE void toggleAutoMode(bool);
     Q_INVOKABLE void showPresentation(QString file);
     Q_INVOKABLE QString cimage;
@@ -32,8 +34,14 @@ public slots:
 
 private:
     bool autoMovement;
-//    OpenCV opencv;
-    WinControls win;
+
+    Camera externCam0;
+    cvService externCam1;
+
+    QThread camThread0;
+    QThread camThread1;
+
+    //WinControls win;
     Arduino arduino;
     Activity activity;
     YandexApi *yandex;

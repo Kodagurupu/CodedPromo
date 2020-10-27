@@ -1,17 +1,82 @@
 #include "opencv.h"
-#ifdef IS_OPENCV
 
-OpenCV::OpenCV(QObject *parent) : QObject(parent)
+Camera::Camera(QObject *parent) : QObject(parent)
 {
-    service.initService(thread);
-    service.moveToThread(&thread);
+    deviceID = 2;
+    apiID = CAP_ANY;
+}
+
+void Camera::initService(QThread &thread)
+{
+    connect(&thread, &QThread::started, this, &Camera::run);
+}
+
+void Camera::run()
+{
+    cap.open(deviceID, apiID);
+    if (!cap.isOpened()) {
+        qCritical() << "[OPENCV] Can't open camera";
+        return;
+    }
+
+    while(true)
+    {
+        cap.read(frame);
+        if (frame.empty()) {
+            qCritical() << "[OPENCV] Error reading from camera";
+            break;
+        }
+        imshow("Live", frame);
+
+        if (waitKey(5) >= 0) break;
+    }
 }
 
 cvService::cvService(QObject *parent)
     : QObject(parent)
 {
-    deviceID = 0;
+    deviceID = 1;
     apiID = CAP_ANY;
+
+    char fileName[] = "objects/people.xml";
+    if (!cascade.load(fileName))
+    {
+        qCritical() << "Can't open cascade";
+    }
+}
+
+void cvService::findObjects(CascadeClassifier &cascade)
+{
+    Mat grey;
+    int counter = 0;
+    vector<Rect> faces;
+
+    cvtColor(frame, grey, COLOR_BGR2GRAY);
+    cascade.detectMultiScale(grey, faces);
+
+    for (Rect face : faces)
+    {
+        Point center( face.x + face.width * 0.5, face.y + face.height * 0.5 );
+        ellipse(
+                    frame,
+                    center,
+                    Size(
+                        face.width * 0.5,
+                        face.height* 0.5),
+                    0,
+                    0,
+                    360,
+                    Scalar( 255, 0, 255 ),
+                    4,
+                    8,
+                    0 );
+        counter++;
+    }
+
+    QJsonObject output;
+    output["count"] = counter;
+
+    emit foundPeople(output);
 }
 
 void cvService::worker()
@@ -28,14 +93,16 @@ void cvService::worker()
             qCritical() << "[OPENCV] Error reading from camera";
             break;
         }
+        resize(frame, frame, Size(300, 250));
+
         imshow("Video", frame);
         if (waitKey(5) >= 0)
             break;
     }
 }
 
+
 void cvService::initService(QThread &thread)
 {
     connect(&thread, &QThread::started, this, &cvService::worker);
 }
-#endif

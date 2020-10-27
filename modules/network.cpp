@@ -13,6 +13,7 @@ bool Network::getState()
     netReply = netMgr->get(netRequest);
     netMgr->connect(netReply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
+
     if (netReply->readAll() == "")
         return false;
     else

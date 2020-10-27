@@ -27,7 +27,8 @@ SOURCES += \
         modules/opencv.cpp \
         modules/wincontrols.cpp \
         modules/yandexapi.cpp \
-        sources/main.cpp
+        sources/main.cpp \
+        sources/private.cpp
 
 RESOURCES += sources/qml.qrc
 
@@ -51,4 +52,12 @@ HEADERS += \
     modules/opencv.h \
     modules/wincontrols.h \
     modules/yandexapi.h \
+    sources/private.h \
     sources/private.h
+
+win32:CONFIG(release, debug|release): LIBS += -LD:/opencv/build/x64/vc15/lib/ -lopencv_world450
+else:win32:CONFIG(debug, debug|release): LIBS += -LD:/opencv/build/x64/vc15/lib/ -lopencv_world450d
+else:unix: LIBS += -LD:/opencv/build/x64/vc15/lib/ -lopencv_world450
+
+INCLUDEPATH += D:/opencv/build/include
+DEPENDPATH += D:/opencv/build/include

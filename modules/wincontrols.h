@@ -1,7 +1,7 @@
 #ifndef WINCONTROLS_H
 #define WINCONTROLS_H
 
-#ifdef WIN32
+#ifdef WIN64
 
 #define WINVER 0x0500
 

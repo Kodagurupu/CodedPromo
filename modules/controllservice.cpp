@@ -10,10 +10,19 @@ ControllService::ControllService(QObject *parent)
     connect(yandex, &YandexApi::newData, this, &ControllService::requestToArduino);
     connect(yandex, &YandexApi::newData, &service, &MessageService::getData);
     connect(&activity, &Activity::sendCommand, this, &ControllService::reciveToArduino);
-    connect(&activity, &Activity::sendText, this, &ControllService::sendText);
+    //connect(&activity, &Activity::sendText, this, &ControllService::sendText);
     connect(this, &ControllService::endActivity, &activity, &Activity::reciveResponse);
-}
 
+    externCam0.initService(camThread0);
+    externCam1.initService(camThread1);
+
+    externCam0.moveToThread(&camThread0);
+    externCam1.moveToThread(&camThread1);
+
+    camThread0.start();
+    camThread1.start();
+}
+/*
 void ControllService::sendText(QString command)
 {
     win.swipeWindow();
@@ -29,7 +38,7 @@ void ControllService::sendText(QString command)
     QThread::currentThread()->msleep(1000);
     emit endActivity();
 }
-
+*/
 void ControllService::reciveToArduino(QString data)
 {
     Commands command = arduino.getCommand(data);
