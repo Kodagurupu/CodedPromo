@@ -30,27 +30,6 @@ public:
     QList<QString> ruStop = {"Стоп", "стоп"};
 };
 
-class ArduinoService : public QObject
-{
-    Q_OBJECT
-
-signals:
-    void connected();
-
-public:
-    ArduinoService(QObject *parent = nullptr);
-    void initService(QThread &thread, QSerialPort &serial);
-    void sendCommand(Commands command);
-
-public slots:
-    void worker();
-
-private:
-    QSerialPort *_serial;
-    Commands lastCommand;
-    Commands currentCommand;
-};
-
 class Arduino : public QObject
 {
     Q_OBJECT
@@ -67,7 +46,6 @@ private:
     QThread thread;
     QSerialPort serial;
     Commands lastCommand;
-    ArduinoService service;
     bool in(QList<QString>, QVariant);
 };
 

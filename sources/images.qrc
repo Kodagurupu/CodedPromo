@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../assets/images/account_circle-black.svg</file>
+        <file>../assets/images/account_circle-white.svg</file>
+        <file>../assets/images/opros.jpg</file>
+        <file>../assets/images/i.jpg</file>
+        <file>../assets/images/ma2.png</file>
+        <file>../assets/images/maxresdefault.jpg</file>
+        <file>../assets/images/1592031847_tass_38188666.jpg</file>
+        <file>../assets/images/back.svg</file>
+        <file>../assets/images/weather/rain.jpg</file>
+        <file>../assets/images/weather/clear.jpg</file>
+        <file>../assets/images/weather/snow.jpg</file>
+        <file>../assets/images/weather/clouds.jpg</file>
+    </qresource>
+</RCC>

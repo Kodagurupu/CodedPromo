@@ -5,9 +5,7 @@ Arduino::Arduino(QObject *parent)
 {
     qInfo() << "[ARDUINO] init";
     qInfo() << "[ARDUINO] openPort";
-    serial.setPortName("COM8");
-    service.initService(thread, serial);
-    service.moveToThread(&thread);
+    serial.setPortName("COM3");
     if (!serial.open(QIODevice::WriteOnly))
     {
         qInfo() << "[ARDUINO] Init Serial Port";
@@ -39,7 +37,12 @@ Commands Arduino::getCommand( QString data )
 void Arduino::move(Commands command)
 {
     lastCommand = command;
-    service.sendCommand(command);
+    qInfo() << "[ARDUINO_SERVICE] sending to COM: " + QString::number(command);
+    if (serial.isOpen() && serial.isWritable())
+    {
+        QByteArray data = QString::number(command).toUtf8();
+        serial.write(data);
+    }
 }
 
 bool Arduino::in(QList<QString> list, QVariant value)
@@ -47,35 +50,4 @@ bool Arduino::in(QList<QString> list, QVariant value)
     foreach( QVariant item, list )
         if (item == value) return true;
     return false;
-}
-
-ArduinoService::ArduinoService(QObject *parent)
-    : QObject(parent)
-{
-    qInfo() << "[ARDUINO_SERVICE] Init service";
-}
-
-void ArduinoService::initService(QThread &thread, QSerialPort &serial)
-{
-    _serial = &serial;
-    connect(&thread, &QThread::started, this, &ArduinoService::worker);
-}
-
-void ArduinoService::worker()
-{
-    while (true)
-    {
-        QThread::currentThread()->msleep(100);
-    }
-}
-
-
-void ArduinoService::sendCommand(Commands command)
-{
-    qInfo() << "[ARDUINO_SERVICE] sending to COM: " + QString::number(command);
-    if (_serial->isOpen() && _serial->isWritable())
-    {
-        QByteArray data = QString::number(command).toUtf8();
-        _serial->write(data);
-    }
 }

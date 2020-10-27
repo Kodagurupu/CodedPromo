@@ -3,6 +3,8 @@ QT += \
     network \
     serialport
 
+win32: LIBS += -lUser32
+
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -17,14 +19,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        modules/activity.cpp \
         modules/arduino.cpp \
         modules/controllservice.cpp \
         modules/messageservice.cpp \
         modules/network.cpp \
+        modules/opencv.cpp \
+        modules/weather.cpp \
+        modules/wincontrols.cpp \
         modules/yandexapi.cpp \
-        sources/main.cpp
+        sources/main.cpp \
+        sources/private.cpp
 
-RESOURCES += sources/qml.qrc
+RESOURCES += sources/qml.qrc \
+    sources/images.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -38,9 +46,21 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    modules/activity.h \
     modules/arduino.h \
     modules/controllservice.h \
     modules/messageservice.h \
     modules/network.h \
+    modules/opencv.h \
+    modules/weather.h \
+    modules/wincontrols.h \
     modules/yandexapi.h \
+    sources/private.h \
     sources/private.h
+
+win32:CONFIG(release, debug|release): LIBS += -LD:/opencv/build/x64/vc15/lib/ -lopencv_world450
+else:win32:CONFIG(debug, debug|release): LIBS += -LD:/opencv/build/x64/vc15/lib/ -lopencv_world450d
+else:unix: LIBS += -LD:/opencv/build/x64/vc15/lib/ -lopencv_world450
+
+INCLUDEPATH += D:/opencv/build/include
+DEPENDPATH += D:/opencv/build/include
