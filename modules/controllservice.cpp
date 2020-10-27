@@ -12,6 +12,7 @@ ControllService::ControllService(QObject *parent)
     connect(&activity, &Activity::sendCommand, this, &ControllService::reciveToArduino);
     //connect(&activity, &Activity::sendText, this, &ControllService::sendText);
     connect(this, &ControllService::endActivity, &activity, &Activity::reciveResponse);
+    connect(&externCam1, &cvService::foundPeople, this, &ControllService::reciveOpenCV);
 
     externCam0.initService(camThread0);
     externCam1.initService(camThread1);
@@ -61,4 +62,28 @@ void ControllService::toggleAutoMode(bool param)
     if (param == autoMovement)
         return;
     autoMovement = param;
+}
+
+bool ControllService::getMove()
+{
+    return autoMovement;
+}
+
+QJsonObject ControllService::getPeople()
+{
+    return people;
+}
+
+void ControllService::setMove(bool data)
+{
+    if (autoMovement == data) return;
+    autoMovement = data;
+    emit moveChanged(data);
+}
+
+void ControllService::reciveOpenCV(QJsonObject data)
+{
+    if (data["count"] == people["count"]) return;
+    people = data;
+    emit peopleChanged(data);
 }

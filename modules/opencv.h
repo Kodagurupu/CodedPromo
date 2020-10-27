@@ -28,7 +28,7 @@ public:
     cvService(QObject *parent = nullptr);
     ~cvService();
     void initService(QThread &thread);
-    void findObjects(CascadeClassifier &object);
+    void findObjects();
 
 public slots:
     void worker();

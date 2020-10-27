@@ -6,6 +6,12 @@ Camera::Camera(QObject *parent) : QObject(parent)
     apiID = CAP_ANY;
 }
 
+Camera::~Camera()
+{
+    QThread::currentThread()->exit();
+    QThread::currentThread()->quit();
+}
+
 void Camera::initService(QThread &thread)
 {
     connect(&thread, &QThread::started, this, &Camera::run);
@@ -41,18 +47,24 @@ cvService::cvService(QObject *parent)
     char fileName[] = "objects/people.xml";
     if (!cascade.load(fileName))
     {
-        qCritical() << "Can't open cascade";
+        qCritical() << "[OPENCV] Can't open cascade";
     }
 }
 
-void cvService::findObjects(CascadeClassifier &cascade)
+cvService::~cvService()
+{
+    QThread::currentThread()->exit();
+    QThread::currentThread()->quit();
+}
+
+void cvService::findObjects()
 {
     Mat grey;
     int counter = 0;
     vector<Rect> faces;
 
     cvtColor(frame, grey, COLOR_BGR2GRAY);
-    cascade.detectMultiScale(grey, faces);
+    cascade.detectMultiScale(grey, faces, 1.1, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
 
     for (Rect face : faces)
     {
@@ -93,7 +105,9 @@ void cvService::worker()
             qCritical() << "[OPENCV] Error reading from camera";
             break;
         }
+
         resize(frame, frame, Size(300, 250));
+        findObjects();
 
         imshow("Video", frame);
         if (waitKey(5) >= 0)

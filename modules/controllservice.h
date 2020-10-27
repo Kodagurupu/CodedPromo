@@ -15,11 +15,15 @@ class ControllService : public QObject
 {
     Q_OBJECT
     Q_ENUM(Commands)
-    //Q_PROPERTY(bool )
+    Q_PROPERTY(bool autoMove READ getMove WRITE setMove NOTIFY moveChanged)
+    Q_PROPERTY(QJsonObject people READ getPeople NOTIFY peopleChanged)
 
 signals:
     void endActivity();
     void reciveVideo(QString);
+    void reciveArduinoCommand(Commands);
+    void moveChanged(bool);
+    void peopleChanged(QJsonObject);
 
 public:
     explicit ControllService(QObject *parent = nullptr);
@@ -28,12 +32,19 @@ public:
     Q_INVOKABLE void showPresentation(QString file);
     Q_INVOKABLE QString cimage;
 
+    bool getMove();
+    QJsonObject getPeople();
+
+    void setMove(bool);
+
 public slots:
     void reciveToArduino(QString);
     void requestToArduino(Request);
+    void reciveOpenCV(QJsonObject);
 
 private:
     bool autoMovement;
+    QJsonObject people;
 
     Camera externCam0;
     cvService externCam1;
@@ -47,9 +58,6 @@ private:
     YandexApi *yandex;
     Private privateData;
     MessageService service;
-
-signals:
-    void reciveArduinoCommand(Commands);
 };
 
 #endif // CONTROLLSERVICE_H

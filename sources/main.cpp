@@ -1,14 +1,18 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include "../modules/weather.h"
 #include "../modules/controllservice.h"
+
 
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    qmlRegisterType<ControllService>("ControllService", 0, 1, "ControllService");
 
     QGuiApplication app(argc, argv);
+
+    qmlRegisterType<Weather>("WeatherCore", 0, 1, "WeatherCore");
+    qmlRegisterType<ControllService>("ControllService", 0, 3, "ControllService");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/assets/forms/main.qml"));

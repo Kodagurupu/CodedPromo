@@ -25,12 +25,14 @@ SOURCES += \
         modules/messageservice.cpp \
         modules/network.cpp \
         modules/opencv.cpp \
+        modules/weather.cpp \
         modules/wincontrols.cpp \
         modules/yandexapi.cpp \
         sources/main.cpp \
         sources/private.cpp
 
-RESOURCES += sources/qml.qrc
+RESOURCES += sources/qml.qrc \
+    sources/images.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -50,6 +52,7 @@ HEADERS += \
     modules/messageservice.h \
     modules/network.h \
     modules/opencv.h \
+    modules/weather.h \
     modules/wincontrols.h \
     modules/yandexapi.h \
     sources/private.h \

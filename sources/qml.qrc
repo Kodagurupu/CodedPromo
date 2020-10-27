@@ -1,5 +1,14 @@
 <RCC>
     <qresource prefix="/">
         <file>../assets/forms/main.qml</file>
+        <file>../assets/forms/MainPage.qml</file>
+        <file>../assets/forms/AuthPage.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>../assets/forms/AdminPage.qml</file>
+        <file>../assets/forms/LeftPanel.qml</file>
+        <file>../assets/forms/Questions.qml</file>
+        <file>../assets/forms/Service.qml</file>
+        <file>../assets/forms/Weather.qml</file>
+        <file>../assets/forms/BackButton.qml</file>
     </qresource>
 </RCC>

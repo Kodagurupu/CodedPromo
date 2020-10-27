@@ -1,46 +1,105 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
+import QtQuick.Controls 2.5
+import QtQuick.Controls.Material 2.3
 
-import ControllService 0.1
+import ControllService 0.3
 
-Window {
+Window
+{
     visible: true
-    width: 640
-    height: 480
+    width: Screen.width
+    height: Screen.height
     title: qsTr("Promorobot")
 
-    Rectangle
+    flags: Qt.FramelessWindowHint
+
+    Material.theme: Material.Light
+    Material.accent: Material.Indigo
+
+    property bool active: false
+
+    ControllService
     {
-        anchors.fill: parent
+        id: controllService
+        autoMove: true
 
-        Rectangle
+        onPeopleChanged:
         {
-            width: 250
-            height: 100
-            color: "purple"
-            anchors.centerIn: parent
-
-            Text {
-                anchors.centerIn: parent
-                text: "Провести презентацию"
-                color: "white"
-                font.pixelSize: 16
-            }
-
-            MouseArea
+            if (people["count"] >= 1)
             {
-                anchors.fill: parent
-                onClicked:
-                {
-                    service.toggleAutoMode(true);
-                    service.showPresentation("assets/presentation0/presentation0.json");
-                }
+                active = true
+                exitDelay.stop()
+                blackScreen.visible = false
+            } else
+            {
+                exitDelay.start()
             }
         }
     }
 
-    ControllService
+    Timer
     {
-        id: service
+        id: exitDelay
+
+        interval: 0
+        repeat: false
+
+        onTriggered: blackScreen.visible = true
+    }
+
+    Rectangle
+    {
+        anchors.fill: parent
+        visible: pageLoader.loaded ? false : true
+        color: "white"
+
+        BusyIndicator
+        {
+            width: 42
+            height: 42
+            anchors.centerIn: parent
+        }
+    }
+
+    Loader
+    {
+        id: pageLoader
+        anchors.fill: parent
+        source: "MainPage.qml"
+        asynchronous: true
+        visible: false
+
+        property var switchFunc: switchFunction
+
+        onLoaded:
+        {
+            pageLoader.visible = true
+        }
+        onSourceChanged:
+        {
+            pageLoader.visible = false
+        }
+    }
+
+    Timer
+    {
+        id: switchFunction
+        interval: 0
+
+        property string page: "MainPage.qml"
+
+        onTriggered:
+        {
+            pageLoader.source = page
+        }
+    }
+
+    Rectangle
+    {
+        id: blackScreen
+
+        anchors.fill: parent
+        color: "black"
     }
 }
