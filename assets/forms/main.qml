@@ -89,10 +89,7 @@ Window
 
         property string page: "MainPage.qml"
 
-        onTriggered:
-        {
-            pageLoader.source = page
-        }
+        onTriggered: pageLoader.source = page
     }
 
     Rectangle

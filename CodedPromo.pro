@@ -1,7 +1,8 @@
 QT += \
     quick \
     network \
-    serialport
+    serialport \
+    sql
 
 win32: LIBS += -lUser32
 
@@ -25,6 +26,7 @@ SOURCES += \
         modules/messageservice.cpp \
         modules/network.cpp \
         modules/opencv.cpp \
+        modules/questions.cpp \
         modules/weather.cpp \
         modules/wincontrols.cpp \
         modules/yandexapi.cpp \
@@ -52,6 +54,7 @@ HEADERS += \
     modules/messageservice.h \
     modules/network.h \
     modules/opencv.h \
+    modules/questions.h \
     modules/weather.h \
     modules/wincontrols.h \
     modules/yandexapi.h \
