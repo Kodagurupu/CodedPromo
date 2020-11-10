@@ -3,11 +3,25 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.3
 
+import Questions 0.1
 
 Item
 {
     id: root
     anchors.fill: parent
+
+    property var allQuestions: core.get()
+    property var randQuestion: getRandom()
+
+    function getRandom()
+    {
+        return allQuestions[ Math.floor( Math.random() * allQuestions.length() - 1 ) ]
+    }
+
+    Core
+    {
+        id: questions
+    }
 
     Rectangle
     {
@@ -71,7 +85,7 @@ Item
 
                 Text
                 {
-                    text: qsTr("Заголовок Опроса")
+                    text: randQuestion["title"]
                     color: "white"
                     font.pointSize: 48
                 }
@@ -80,15 +94,7 @@ Item
                 {
                     Layout.fillWidth: true
                     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                    text: qsTr("Опрос — это выяснение мнения сообщества по тем или иным вопросам. По итогам опроса могут быть изменены или отменены существующие либо приняты новые правила и руководства (за исключением противоречащих общим принципам проекта).
-
-        Организатором опроса может быть любой участник Википедии (в том числе анонимный). Если в опросе высказалось значительное количество участников, а итог опроса не оспаривается в течение разумного срока, можно считать консенсус достигнутым.
-
-        Создание
-
-        Перед созданием опроса обязательно обсудите с другими участниками необходимость опроса, возможно, вы можете получить ответ на форуме.
-
-        Посмотрите, возможно, такой или похожий опрос уже проводился или проводится сейчас:")
+                    text: randQuestion["content"]
                     color: Qt.rgba(0,0,0,0.8)
                     font.pointSize: 16
                 }
@@ -98,19 +104,24 @@ Item
                     Layout.fillHeight: true
                 }
 
-                CheckBox
+                ListView
                 {
-                    text: "Вы согласны с утверждением 1"
-                }
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
 
-                CheckBox
-                {
-                    text: "Вы согласны с утверждением 2"
-                }
+                    model: parse(randQuestion["questons"])
 
-                CheckBox
-                {
-                    text: "Вы согласны с утверждением 3"
+                    function parse(data)
+                    {
+                        var output = []
+                        output = data.split(";")
+                        return output
+                    }
+
+                    delegate: RadioButton
+                    {
+                        text: modelData
+                    }
                 }
 
                 Rectangle

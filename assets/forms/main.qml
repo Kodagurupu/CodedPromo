@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.3
+import QtMultimedia 5.9
 
 import ControllService 0.3
 
@@ -12,12 +13,16 @@ Window
     height: Screen.height
     title: qsTr("Promorobot")
 
-    flags: Qt.FramelessWindowHint
-
     Material.theme: Material.Light
     Material.accent: Material.Indigo
 
+    flags: Qt.FramelessWindowHint
     property bool active: false
+
+    Audio
+    {
+        id: sound
+    }
 
     ControllService
     {
@@ -36,13 +41,31 @@ Window
                 exitDelay.start()
             }
         }
+
+        onAudioChanged:
+        {
+            if (controllService.audio.includes("assets/-1.mp3"))
+            {
+                sound.stop()
+                return
+            }
+
+            if (controllService.audio.includes("assets/pause.mp3"))
+            {
+                sound.pause()
+                return
+            }
+
+            sound.source = controllService.audio
+            sound.play()
+        }
     }
 
     Timer
     {
         id: exitDelay
 
-        interval: 0
+        interval: 3500
         repeat: false
 
         onTriggered: blackScreen.visible = true
@@ -89,10 +112,7 @@ Window
 
         property string page: "MainPage.qml"
 
-        onTriggered:
-        {
-            pageLoader.source = page
-        }
+        onTriggered: pageLoader.source = page
     }
 
     Rectangle

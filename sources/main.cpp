@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 
 #include "../modules/weather.h"
+#include "../modules/questions.h"
 #include "../modules/controllservice.h"
 
 
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<Weather>("WeatherCore", 0, 1, "WeatherCore");
+    qmlRegisterType<Questions>("Questions", 0, 1, "Core");
     qmlRegisterType<ControllService>("ControllService", 0, 3, "ControllService");
 
     QQmlApplicationEngine engine;

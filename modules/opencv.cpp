@@ -112,6 +112,8 @@ void cvService::worker()
         imshow("Video", frame);
         if (waitKey(5) >= 0)
             break;
+
+        QThread::currentThread()->msleep(5);
     }
 }
 

@@ -4,10 +4,11 @@
 #include <QObject>
 
 #include "opencv.h"
-#include "arduino.h"
+//#include "arduino.h"
 #include "activity.h"
 #include "yandexapi.h"
 //#include "wincontrols.h"
+#include "controlldaemon.h"
 #include "messageservice.h"
 #include "../sources/private.h"
 
@@ -17,6 +18,7 @@ class ControllService : public QObject
     Q_ENUM(Commands)
     Q_PROPERTY(bool autoMove READ getMove WRITE setMove NOTIFY moveChanged)
     Q_PROPERTY(QJsonObject people READ getPeople NOTIFY peopleChanged)
+    Q_PROPERTY(QString audio READ getAudio NOTIFY audioChanged)
 
 signals:
     void endActivity();
@@ -24,6 +26,7 @@ signals:
     void reciveArduinoCommand(Commands);
     void moveChanged(bool);
     void peopleChanged(QJsonObject);
+    void audioChanged(QString);
 
 public:
     explicit ControllService(QObject *parent = nullptr);
@@ -33,6 +36,7 @@ public:
     Q_INVOKABLE QString cimage;
 
     bool getMove();
+    QString getAudio();
     QJsonObject getPeople();
 
     void setMove(bool);
@@ -41,9 +45,11 @@ public slots:
     void reciveToArduino(QString);
     void requestToArduino(Request);
     void reciveOpenCV(QJsonObject);
+    void reciveAudio(QString);
 
 private:
     bool autoMovement;
+    QString audioFile;
     QJsonObject people;
 
     Camera externCam0;
@@ -51,12 +57,14 @@ private:
 
     QThread camThread0;
     QThread camThread1;
+    QThread daemonThread;
 
     //WinControls win;
-    Arduino arduino;
+    //Arduino arduino;
     Activity activity;
     YandexApi *yandex;
     Private privateData;
+    ControllDaemon daemon;
     MessageService service;
 };
 
