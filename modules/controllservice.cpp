@@ -1,7 +1,8 @@
 #include "controllservice.h"
 
 ControllService::ControllService(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      audioFile("")
 {
     qInfo() << "[MAIN_SERVICE] init";
     autoMovement = false;
@@ -13,15 +14,19 @@ ControllService::ControllService(QObject *parent)
     //connect(&activity, &Activity::sendText, this, &ControllService::sendText);
     connect(this, &ControllService::endActivity, &activity, &Activity::reciveResponse);
     connect(&externCam1, &cvService::foundPeople, this, &ControllService::reciveOpenCV);
+    connect(&daemon, &ControllDaemon::startSpeak, this, &ControllService::reciveAudio);
 
+    daemon.initService(daemonThread);
     externCam0.initService(camThread0);
     externCam1.initService(camThread1);
 
+    daemon.moveToThread(&daemonThread);
     externCam0.moveToThread(&camThread0);
     externCam1.moveToThread(&camThread1);
 
     camThread0.start();
     camThread1.start();
+    daemonThread.start();
 }
 /*
 void ControllService::sendText(QString command)
@@ -69,6 +74,11 @@ bool ControllService::getMove()
     return autoMovement;
 }
 
+QString ControllService::getAudio()
+{
+    return audioFile;
+}
+
 QJsonObject ControllService::getPeople()
 {
     return people;
@@ -86,4 +96,13 @@ void ControllService::reciveOpenCV(QJsonObject data)
     if (data["count"] == people["count"]) return;
     people = data;
     emit peopleChanged(data);
+}
+
+void ControllService::reciveAudio(QString data)
+{
+    data = "file:///" + QDir().currentPath() + "/assets/" + data + ".mp3";
+    if (data == audioFile)
+        return;
+    audioFile = data;
+    emit audioChanged(data);
 }

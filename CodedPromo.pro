@@ -22,6 +22,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         modules/activity.cpp \
         modules/arduino.cpp \
+        modules/armscontroll.cpp \
+        modules/controlldaemon.cpp \
         modules/controllservice.cpp \
         modules/messageservice.cpp \
         modules/network.cpp \
@@ -50,6 +52,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     modules/activity.h \
     modules/arduino.h \
+    modules/armscontroll.h \
+    modules/controlldaemon.h \
     modules/controllservice.h \
     modules/messageservice.h \
     modules/network.h \
