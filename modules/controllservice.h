@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "opencv.h"
-#include "arduino.h"
+//#include "arduino.h"
 #include "activity.h"
 #include "yandexapi.h"
 //#include "wincontrols.h"
@@ -60,7 +60,7 @@ private:
     QThread daemonThread;
 
     //WinControls win;
-    Arduino arduino;
+    //Arduino arduino;
     Activity activity;
     YandexApi *yandex;
     Private privateData;

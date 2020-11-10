@@ -13,7 +13,7 @@ class ControllDaemon : public QObject
     Q_OBJECT
 signals:
     void startSpeak(QString);
-    void moving(armCommands);
+    void moving(int);
 
 public:
     explicit ControllDaemon(QObject *parent = nullptr);

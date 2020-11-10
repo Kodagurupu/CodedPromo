@@ -20,7 +20,7 @@ public:
     explicit armsControll(QObject *parent = nullptr);
 
 public slots:
-    void reciveCommand(armCommands);
+    void reciveCommand(int);
 
 private:
     QSerialPort serial;

@@ -50,7 +50,7 @@ void ControllDaemon::run()
 
         if (args[0] == "move")
         {
-            emit moving(Parse(argv[0].toInt()));
+            emit moving(argv[0].toInt());
         }
 
         QThread::currentThread()->msleep(500);

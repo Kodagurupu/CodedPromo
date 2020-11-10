@@ -11,24 +11,24 @@ armCommands Parse(int command)
 
 armsControll::armsControll(QObject *parent) : QObject(parent)
 {
-    qInfo() << "[ARDUINO] init";
-    qInfo() << "[ARDUINO] openPort";
-    serial.setPortName("COM3");
+    qInfo() << "[ARDUINO_ARMS] init";
+    qInfo() << "[ARDUINO_ARMS] openPort";
+    serial.setPortName("COM4");
     if (!serial.open(QIODevice::WriteOnly))
     {
-        qInfo() << "[ARDUINO] Init Serial Port";
+        qInfo() << "[ARDUINO_ARMS] Init Serial Port";
         serial.setBaudRate(QSerialPort::Baud9600);
         serial.setDataBits(QSerialPort::Data8);
         serial.setParity(QSerialPort::NoParity);
         serial.setStopBits(QSerialPort::OneStop);
         serial.setFlowControl(QSerialPort::NoFlowControl);
     } else
-        qInfo() << "[ARDUINO] failed open port";
+        qInfo() << "[ARDUINO_ARMS] failed open port";
 }
 
-void armsControll::reciveCommand(armCommands command)
+void armsControll::reciveCommand(int command)
 {
-    qInfo() << "[ARDUINO_SERVICE] sending to COM: " + QString::number(command);
+    qInfo() << "[ARDUINO_SERVICE_ARMS] sending to COM: " + QString::number(command);
     if (serial.isOpen() && serial.isWritable())
     {
         QByteArray data = QString::number(command).toUtf8();

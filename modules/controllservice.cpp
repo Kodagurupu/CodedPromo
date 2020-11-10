@@ -7,7 +7,7 @@ ControllService::ControllService(QObject *parent)
     qInfo() << "[MAIN_SERVICE] init";
     autoMovement = false;
     yandex = new YandexApi(privateData.serverAddr + "/" + privateData.workingDir, privateData.sessionID);
-    connect(this, &ControllService::reciveArduinoCommand, &arduino, &Arduino::move);
+    //connect(this, &ControllService::reciveArduinoCommand, &arduino, &Arduino::move);
     connect(yandex, &YandexApi::newData, this, &ControllService::requestToArduino);
     connect(yandex, &YandexApi::newData, &service, &MessageService::getData);
     connect(&activity, &Activity::sendCommand, this, &ControllService::reciveToArduino);
@@ -47,8 +47,8 @@ void ControllService::sendText(QString command)
 */
 void ControllService::reciveToArduino(QString data)
 {
-    Commands command = arduino.getCommand(data);
-    emit reciveArduinoCommand(command);
+    //Commands command = arduino.getCommand(data);
+    //emit reciveArduinoCommand(command);
     emit endActivity();
 }
 
