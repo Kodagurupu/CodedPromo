@@ -20,7 +20,7 @@ bool Network::getState()
         return true;
 }
 
-bool Network::post(QString addr, QVariant data)
+bool Network::post(QString addr, QJsonObject data)
 {
     if (!haveConnection)
     {
@@ -28,8 +28,10 @@ bool Network::post(QString addr, QVariant data)
         emit recived("");
         return false;
     }
-    QByteArray postData = data.toByteArray();
+    QJsonDocument jsonDoc (data);
+    QByteArray postData = jsonDoc.toJson();
     netRequest.setUrl(addr);
+    netRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     netReply = netMgr->post(netRequest, postData);
     QObject::connect(netReply, &QNetworkReply::finished, this, &Network::reciveData);
     return true;

@@ -86,7 +86,7 @@ void cvService::findObjects()
     }
 
     QJsonObject output;
-    output["count"] = counter;
+    output["people"] = counter;
 
     emit foundPeople(output);
 }
@@ -113,7 +113,7 @@ void cvService::worker()
         if (waitKey(5) >= 0)
             break;
 
-        QThread::currentThread()->msleep(5);
+        QThread::currentThread()->msleep(150);
     }
 }
 

@@ -93,14 +93,15 @@ void ControllService::setMove(bool data)
 
 void ControllService::reciveOpenCV(QJsonObject data)
 {
-    if (data["count"] == people["count"]) return;
+    if (data["people"] == people["people"]) return;
     people = data;
     emit peopleChanged(data);
 }
 
 void ControllService::reciveAudio(QString data)
 {
-    data = "file:///" + QDir().currentPath() + "/assets/" + data + ".mp3";
+    if (data.length() < 20)
+        data = QDir().currentPath() + "/assets/" + data + ".mp3";
     if (data == audioFile)
         return;
     audioFile = data;

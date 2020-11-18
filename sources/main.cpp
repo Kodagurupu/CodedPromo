@@ -1,29 +1,31 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
+#include <QCoreApplication>
+#include <QtMultimedia/QMediaPlayer>
 
-#include "../modules/weather.h"
-#include "../modules/questions.h"
+#include "../modules/network.h"
 #include "../modules/controllservice.h"
-
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QMediaPlayer *player = new QMediaPlayer;
+    QCoreApplication app(argc, argv);
 
-    QGuiApplication app(argc, argv);
+    Network net;
+    ControllService service;
 
-    qmlRegisterType<Weather>("WeatherCore", 0, 1, "WeatherCore");
-    qmlRegisterType<Questions>("Questions", 0, 1, "Core");
-    qmlRegisterType<ControllService>("ControllService", 0, 3, "ControllService");
+    QObject reciver;
 
-    QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/assets/forms/main.qml"));
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                     &app, [url](QObject *obj, const QUrl &objUrl) {
-        if (!obj && url == objUrl)
-            QCoreApplication::exit(-1);
-    }, Qt::QueuedConnection);
-    engine.load(url);
+    QObject::connect(&service, &ControllService::peopleChanged, &reciver, [&net](QJsonObject people) {
+        qDebug() << people;
+        net.post("http://localhost:1080/sendPeople", people);
+    });
+
+    QObject::connect(&service, &ControllService::audioChanged, &reciver, [&player](QString file) {
+       if ( file.split("-1.mp3").length() > 1 ) {
+           return;
+       }
+       player->setMedia(QUrl::fromLocalFile(file));
+       player->play();
+    });
 
     return app.exec();
 }

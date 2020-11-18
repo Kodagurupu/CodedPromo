@@ -2,7 +2,8 @@ QT += \
     quick \
     network \
     serialport \
-    sql
+    sql \
+    multimedia
 
 win32: LIBS += -lUser32
 
@@ -35,8 +36,8 @@ SOURCES += \
         sources/main.cpp \
         sources/private.cpp
 
-RESOURCES += sources/qml.qrc \
-    sources/images.qrc
+RESOURCES += \ #sources/qml.qrc \
+#    sources/images.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

@@ -8,6 +8,9 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
+#include <QJsonObject>
+#include <QJsonDocument>
+
 #include "../sources/private.h"
 
 class Network : public QObject
@@ -23,7 +26,7 @@ signals:
 public:
     explicit Network();
     Q_INVOKABLE bool get(QString addr);
-    Q_INVOKABLE bool post(QString addr, QVariant data);
+    Q_INVOKABLE bool post(QString addr, QJsonObject data);
     Q_INVOKABLE bool getState();
     Q_INVOKABLE QString getRecived();
 
